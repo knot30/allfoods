@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #f6f8fb;
+  --color-foreground: #0f172a;
+  /* 네이비 브랜드 팔레트 */
+  --color-brand: #14315e;
+  --color-brand-dark: #0d2344;
+  --color-brand-light: #2b5394;
+  --color-accent: #2f7ec4;
+  --font-sans: var(--font-geist-sans);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family:
+    var(--font-geist-sans), "Pretendard", "Apple SD Gothic Neo",
+    "Malgun Gothic", "맑은 고딕", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 숫자 정렬용 */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
