@@ -18,13 +18,13 @@ export const SEED_SUPPLIERS: Supplier[] = [
 ];
 
 export const SEED_PRODUCTS: Product[] = [
-  { id: "p1", name: "쌀(20kg)", category: "식량작물", unit: "20kg", origin: "국산(예천)", spec: "1등급", isEco: false, cert: null, kamisItemCode: "111", purchasePrice: 51000, salePrice: 56000, notes: null, createdAt: "2026-03-02T00:00:00.000Z" },
-  { id: "p2", name: "배추", category: "채소류", unit: "10kg", origin: "국산", spec: null, isEco: true, cert: "무농약", kamisItemCode: "211", purchasePrice: 9000, salePrice: 11000, notes: null, createdAt: "2026-03-02T00:00:00.000Z" },
-  { id: "p3", name: "무", category: "채소류", unit: "20kg", origin: "국산", spec: null, isEco: false, cert: null, kamisItemCode: "231", purchasePrice: 13500, salePrice: 16000, notes: null, createdAt: "2026-03-02T00:00:00.000Z" },
-  { id: "p4", name: "양파", category: "채소류", unit: "15kg", origin: "국산", spec: null, isEco: false, cert: null, kamisItemCode: "245", purchasePrice: 15500, salePrice: 18500, notes: null, createdAt: "2026-03-02T00:00:00.000Z" },
-  { id: "p5", name: "감자", category: "식량작물", unit: "20kg", origin: "국산", spec: null, isEco: false, cert: null, kamisItemCode: "152", purchasePrice: 35000, salePrice: 40000, notes: null, createdAt: "2026-03-02T00:00:00.000Z" },
-  { id: "p6", name: "돼지고기(앞다리)", category: "축산물", unit: "1kg", origin: "국산", spec: "냉장", isEco: false, cert: "HACCP", kamisItemCode: "514", purchasePrice: 17000, salePrice: 20500, notes: null, createdAt: "2026-03-05T00:00:00.000Z" },
-  { id: "p7", name: "닭고기", category: "축산물", unit: "1kg", origin: "국산", spec: "냉장", isEco: false, cert: "HACCP", kamisItemCode: "515", purchasePrice: 4800, salePrice: 6200, notes: null, createdAt: "2026-03-05T00:00:00.000Z" },
-  { id: "p8", name: "계란(특란)", category: "축산물", unit: "30개", origin: "국산", spec: null, isEco: false, cert: "HACCP", kamisItemCode: "901", purchasePrice: 6000, salePrice: 7500, notes: null, createdAt: "2026-03-05T00:00:00.000Z" },
-  { id: "p9", name: "대파", category: "채소류", unit: "1kg", origin: "국산", spec: null, isEco: true, cert: "무농약", kamisItemCode: "246", purchasePrice: 2400, salePrice: 3200, notes: null, createdAt: "2026-03-08T00:00:00.000Z" },
+  { id: "p1", name: "쌀(20kg)", category: "식량작물", unit: "20kg", origin: "국산(예천)", spec: "1등급", isEco: false, cert: null, kamisItemCode: "111", purchasePrice: 51000, salePrice: 56000, defaultSupplierName: "예천농협 산지유통센터", notes: null, createdAt: "2026-03-02T00:00:00.000Z" },
+  { id: "p2", name: "배추", category: "채소류", unit: "10kg", origin: "국산", spec: null, isEco: true, cert: "무농약", kamisItemCode: "211", purchasePrice: 9000, salePrice: 11000, defaultSupplierName: "예천친환경영농조합", notes: null, createdAt: "2026-03-02T00:00:00.000Z" },
+  { id: "p3", name: "무", category: "채소류", unit: "20kg", origin: "국산", spec: null, isEco: false, cert: null, kamisItemCode: "231", purchasePrice: 13500, salePrice: 16000, defaultSupplierName: "안동농수산물도매시장", notes: null, createdAt: "2026-03-02T00:00:00.000Z" },
+  { id: "p4", name: "양파", category: "채소류", unit: "15kg", origin: "국산", spec: null, isEco: false, cert: null, kamisItemCode: "245", purchasePrice: 15500, salePrice: 18500, defaultSupplierName: "안동농수산물도매시장", notes: null, createdAt: "2026-03-02T00:00:00.000Z" },
+  { id: "p5", name: "감자", category: "식량작물", unit: "20kg", origin: "국산", spec: null, isEco: false, cert: null, kamisItemCode: "152", purchasePrice: 35000, salePrice: 40000, defaultSupplierName: "안동농수산물도매시장", notes: null, createdAt: "2026-03-02T00:00:00.000Z" },
+  { id: "p6", name: "돼지고기(앞다리)", category: "축산물", unit: "1kg", origin: "국산", spec: "냉장", isEco: false, cert: "HACCP", kamisItemCode: "514", purchasePrice: 17000, salePrice: 20500, defaultSupplierName: "경북축산물공판장", notes: null, createdAt: "2026-03-05T00:00:00.000Z" },
+  { id: "p7", name: "닭고기", category: "축산물", unit: "1kg", origin: "국산", spec: "냉장", isEco: false, cert: "HACCP", kamisItemCode: "515", purchasePrice: 4800, salePrice: 6200, defaultSupplierName: "경북축산물공판장", notes: null, createdAt: "2026-03-05T00:00:00.000Z" },
+  { id: "p8", name: "계란(특란)", category: "축산물", unit: "30개", origin: "국산", spec: null, isEco: false, cert: "HACCP", kamisItemCode: "901", purchasePrice: 6000, salePrice: 7500, defaultSupplierName: "경북축산물공판장", notes: null, createdAt: "2026-03-05T00:00:00.000Z" },
+  { id: "p9", name: "대파", category: "채소류", unit: "1kg", origin: "국산", spec: null, isEco: true, cert: "무농약", kamisItemCode: "246", purchasePrice: 2400, salePrice: 3200, defaultSupplierName: "예천친환경영농조합", notes: null, createdAt: "2026-03-08T00:00:00.000Z" },
 ];

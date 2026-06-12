@@ -54,15 +54,19 @@ function rowToProduct(r: Row): Product {
     id: String(r.id), name: String(r.name), category: (r.category as Product["category"]) ?? "기타",
     unit: String(r.unit ?? ""), origin: s(r.origin), spec: s(r.spec), isEco: Boolean(r.is_eco),
     cert: s(r.cert), kamisItemCode: s(r.kamis_item_code), purchasePrice: n(r.purchase_price),
-    salePrice: n(r.sale_price), notes: s(r.notes), createdAt: String(r.created_at),
+    salePrice: n(r.sale_price), defaultSupplierName: s(r.default_supplier_name),
+    notes: s(r.notes), createdAt: String(r.created_at),
   };
 }
 function productToRow(c: Partial<Product>): Row {
-  return {
+  const row: Row = {
     name: c.name, category: c.category, unit: c.unit, origin: c.origin, spec: c.spec,
     is_eco: c.isEco, cert: c.cert, kamis_item_code: c.kamisItemCode,
     purchase_price: c.purchasePrice, sale_price: c.salePrice, notes: c.notes,
   };
+  // 컬럼이 아직 없을 수 있어(ALTER 전) 값이 있을 때만 포함 → 기존 상품 편집 안전.
+  if (c.defaultSupplierName) row.default_supplier_name = c.defaultSupplierName;
+  return row;
 }
 
 // ── 거래처 ─────────────────────────────────────────────────────

@@ -49,6 +49,8 @@ export interface Product {
   kamisItemCode: string | null;
   purchasePrice: number | null; // 매입 단가(원) — ① 권장투찰가의 원가 기준
   salePrice: number | null; // 판매 단가(원)
+  /** 기본 매입처 — 납품 줄에 매입처 snapshot 으로 자동 적용 (⑤ 추적) */
+  defaultSupplierName: string | null;
   notes: string | null;
   createdAt: string;
 }

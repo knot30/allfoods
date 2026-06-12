@@ -16,7 +16,8 @@ const NAV_GROUPS: { title: string; items: { href: string; label: string; icon: s
   {
     title: "운영",
     items: [
-      { href: "/orders", label: "수주", icon: "▶" },
+      { href: "/deliveries", label: "납품 보드", icon: "▤" },
+      { href: "/contracts", label: "납품 표준표", icon: "▣" },
       { href: "/purchases", label: "매입", icon: "◀" },
     ],
   },
