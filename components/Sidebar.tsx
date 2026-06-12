@@ -14,6 +14,13 @@ const NAV_GROUPS: { title: string; items: { href: string; label: string; icon: s
     ],
   },
   {
+    title: "운영",
+    items: [
+      { href: "/orders", label: "수주", icon: "▶" },
+      { href: "/purchases", label: "매입", icon: "◀" },
+    ],
+  },
+  {
     title: "마스터",
     items: [
       { href: "/customers", label: "거래처", icon: "◉" },
