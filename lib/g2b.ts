@@ -4,8 +4,9 @@
 import {
   G2B_BASE_URL,
   G2B_SERVICE_KEY,
-  REVALIDATE_SECONDS,
-  matchesFilter,
+  G2B_NUM_ROWS,
+  hasFoodKeyword,
+  inRegion,
 } from "./config";
 import type { Bid, Region } from "./types";
 
@@ -55,8 +56,8 @@ interface G2bItem {
   presmptPrce?: string;
   bssamt?: string;
   bidMethdNm?: string;
-  rgnLmtBidLocplcNm?: string;
-  prtcptPsblRgnNm?: string;
+  /** 지역제한 장소 판단기준명 (지역제한 공고면 "경상북도 예천군" 등, 전국이면 "") */
+  rgnLmtBidLocplcJdgmBssNm?: string;
   bidNtceDtlUrl?: string;
 }
 
@@ -80,7 +81,7 @@ function normalize(it: G2bItem): Bid {
     bidNtceDt: toIso(it.bidNtceDt),
     bidClseDt: toIso(it.bidClseDt ?? it.opengDt),
     presmptPrce: num(it.presmptPrce ?? it.bssamt),
-    rgnNm: it.rgnLmtBidLocplcNm ?? it.prtcptPsblRgnNm ?? "",
+    rgnNm: it.rgnLmtBidLocplcJdgmBssNm ?? "",
     bidMethdNm: it.bidMethdNm ?? "",
     detailUrl:
       it.bidNtceDtlUrl ??
@@ -105,7 +106,7 @@ export async function getBids(opts: GetBidsOptions): Promise<Bid[]> {
   const params = new URLSearchParams({
     serviceKey: G2B_SERVICE_KEY,
     pageNo: "1",
-    numOfRows: "100",
+    numOfRows: String(G2B_NUM_ROWS),
     type: "json",
     inqryDiv: "1",
     inqryBgnDt: stamp(begin),
@@ -113,7 +114,12 @@ export async function getBids(opts: GetBidsOptions): Promise<Bid[]> {
   });
 
   const url = `${G2B_BASE_URL}/getBidPblancListInfoThng?${params.toString()}`;
-  const res = await fetch(url, { next: { revalidate: REVALIDATE_SECONDS } });
+  // 응답이 3MB 를 넘어 Next 데이터 캐시(2MB 한도)에 안 들어가므로 no-store.
+  // 캐싱은 라우트/페이지 레벨 revalidate 로 처리.
+  const res = await fetch(url, {
+    headers: { "User-Agent": "Mozilla/5.0 (allfoods)" }, // 일부 WAF 가 기본 UA 차단
+    cache: "no-store",
+  });
   if (!res.ok) throw new Error(`G2B HTTP ${res.status}`);
 
   const text = await res.text();
@@ -127,8 +133,11 @@ export async function getBids(opts: GetBidsOptions): Promise<Bid[]> {
 
   const bids = extractItems(json).map(normalize);
   return bids
-    .filter((b) =>
-      matchesFilter(`${b.bidNtceNm} ${b.dminsttNm} ${b.rgnNm}`, opts.region),
+    .filter(
+      (b) =>
+        // 식자재: 공고명 기준 / 지역: 수요기관·지역제한 필드 기준 (오탐 방지)
+        hasFoodKeyword(`${b.bidNtceNm} ${b.dminsttNm}`) &&
+        inRegion(`${b.dminsttNm} ${b.rgnNm}`, opts.region),
     )
     .sort((a, b) => a.bidClseDt.localeCompare(b.bidClseDt));
 }

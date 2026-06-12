@@ -29,7 +29,18 @@ function filteredFixtureBids(region: Region): Bid[] {
 export async function loadBids(region: Region): Promise<ApiEnvelope<Bid[]>> {
   if (hasG2bKey()) {
     try {
-      return { data: await getBids({ region }), usingFixtures: false, fetchedAt: nowIso() };
+      const data = await getBids({ region });
+      if (data.length > 0) {
+        return { data, usingFixtures: false, fetchedAt: nowIso() };
+      }
+      // 실데이터에 해당 지역 급식 공고가 없으면 데모로 채워 화면이 비지 않게.
+      return {
+        data: filteredFixtureBids(region),
+        usingFixtures: true,
+        fetchedAt: nowIso(),
+        notice:
+          "최근 7일 실데이터에서 이 지역 급식 공고가 없어 데모 데이터 표시 중 (지역 파라미터 확정 후 정밀 필터 예정)",
+      };
     } catch (err) {
       return {
         data: filteredFixtureBids(region),

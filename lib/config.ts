@@ -7,9 +7,14 @@ import type { Region } from "./types";
  *  키 발급 후 Swagger 콘솔에서 정확한 경로를 확인해 .env 에서 교체할 것.
  *  후보 1: https://apis.data.go.kr/1230000/ad/BidPublicInfoService
  *  후보 2: https://apis.data.go.kr/1230000/BidPublicInfoService */
+// ※ 실측 확인(2026-06): 이 엔드포인트는 HTTPS 가 403(Forbidden), HTTP 로만 정상 응답.
+//   경로의 `/ad/` 세그먼트도 실측으로 확정됨.
 export const G2B_BASE_URL =
   process.env.G2B_BASE_URL ??
-  "https://apis.data.go.kr/1230000/ad/BidPublicInfoService";
+  "http://apis.data.go.kr/1230000/ad/BidPublicInfoService";
+
+/** 한 번에 받아올 공고 수. 전국 물품공고가 많아 지역 필터 적중률을 높이려 크게 잡음. */
+export const G2B_NUM_ROWS = Number(process.env.G2B_NUM_ROWS ?? "500");
 
 export const G2B_SERVICE_KEY = process.env.G2B_SERVICE_KEY ?? "";
 
@@ -80,11 +85,21 @@ export function regionKeywords(region: Region): string[] {
   }
 }
 
-/** 공고명·기관명 문자열이 식자재 + (지역) 조건을 만족하는지 */
-export function matchesFilter(text: string, region: Region): boolean {
-  const hasFood = FOOD_KEYWORDS.some((k) => text.includes(k));
-  if (!hasFood) return false;
+/** 식자재/급식 키워드 포함 여부 (공고명 등에 적용) */
+export function hasFoodKeyword(text: string): boolean {
+  return FOOD_KEYWORDS.some((k) => text.includes(k));
+}
+
+/** 지역 조건 충족 여부.
+ *  ※ 지역은 반드시 수요기관명·지역제한 필드에만 적용할 것.
+ *    공고명에 적용하면 "영양팀"(nutrition)이 "영양군"으로 오탐되는 등 충돌 발생. */
+export function inRegion(text: string, region: Region): boolean {
   const rks = regionKeywords(region);
   if (rks.length === 0) return true;
   return rks.some((k) => text.includes(k));
+}
+
+/** 식자재 + 지역을 한 문자열에서 함께 보는 단순 버전 (fixture 필터용). */
+export function matchesFilter(text: string, region: Region): boolean {
+  return hasFoodKeyword(text) && inRegion(text, region);
 }

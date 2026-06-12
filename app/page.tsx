@@ -14,8 +14,9 @@ import { won, dDay, daysUntil, formatDate, pct } from "@/lib/format";
 export const revalidate = 60;
 
 export default async function DashboardPage() {
+  // 대시보드는 실데이터 임팩트를 위해 전국 급식·식자재 공고를 집계.
   const [bidsRes, pricesRes] = await Promise.all([
-    loadBids("gb"),
+    loadBids("all"),
     loadPrices(),
   ]);
   const bids = bidsRes.data;
@@ -44,7 +45,7 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard label="오늘 신규 공고" value={`${todayNew}건`} tone="brand" hint="최근 7일 조회 기준" />
         <StatCard label="마감 임박 (D-2)" value={`${urgent.length}건`} tone="warn" hint="2일 내 마감" />
-        <StatCard label="조회된 공고" value={`${bids.length}건`} hint="경북 + 식자재 필터" />
+        <StatCard label="조회된 공고" value={`${bids.length}건`} hint="전국 급식·식자재 공고" />
         <StatCard label="추적 품목" value={`${prices.length}개`} hint="급식 핵심 품목 도매가" />
       </div>
 

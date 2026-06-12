@@ -5,6 +5,7 @@ import { AnalysisView } from "@/components/AnalysisView";
 export const revalidate = 60;
 
 export default async function AnalysisPage() {
-  const bidsRes = await loadBids("gb");
+  // 분석 대상이 풍부하도록 전국 급식·식자재 공고를 로드 (실데이터).
+  const bidsRes = await loadBids("all");
   return <AnalysisView bidsRes={bidsRes} />;
 }
