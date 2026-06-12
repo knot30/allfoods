@@ -48,6 +48,10 @@ export async function analyzeBid(
     "발주처는 경북 예천·영주 연고의 식자재 납품 회사입니다.",
     "주어진 공고와 도매가 동향을 근거로 보수적이고 실무적인 분석을 제공하세요.",
     "추정·권장값은 반드시 제시된 기초금액과 가격 동향에 근거를 두고 산정하세요.",
+    // 단위 오류 방지 — haiku 가 만원/억원 환산을 자주 틀림.
+    "금액 단위 규칙: 1만원=10,000원, 1억원=100,000,000원. recommendedBidRange 의 low/high 는 반드시 '원' 단위 정수로 출력하고, 서술문에서 만원·억원으로 환산할 때 이 규칙을 정확히 지키며 기초금액의 자릿수를 절대 바꾸지 마세요.",
+    "costComment 에는 제시된 품목명을 최소 1개 이상 구체적으로 인용해 단가 동향을 설명하세요.",
+    "모든 서술은 한국어 존댓말로, 군더더기 없이 작성하세요.",
   ].join(" ");
 
   const prompt = [
@@ -68,6 +72,7 @@ export async function analyzeBid(
     schema: reportSchema,
     system,
     prompt,
+    temperature: 0.3,
   });
 
   return object;

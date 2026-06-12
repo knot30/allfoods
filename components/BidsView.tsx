@@ -57,7 +57,19 @@ export function BidsView({
     }
   }
 
+  const [query, setQuery] = useState("");
+  const [urgentOnly, setUrgentOnly] = useState(false);
+
   const bids = res.data;
+  const filtered = bids.filter((b) => {
+    if (urgentOnly) {
+      const d = dDay(b.bidClseDt);
+      if (d.closed || !d.urgent) return false;
+    }
+    const q = query.trim();
+    if (q && !`${b.bidNtceNm} ${b.dminsttNm}`.includes(q)) return false;
+    return true;
+  });
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -88,6 +100,34 @@ export function BidsView({
         </div>
       </div>
 
+      {/* 검색 + 마감임박 필터 */}
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        <div className="relative flex-1 min-w-[200px]">
+          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+            ⌕
+          </span>
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="공고명·수요기관 검색 (예: 쌀, 김치, 예천)"
+            className="w-full rounded-lg border border-slate-200 bg-white py-2 pl-8 pr-3 text-sm outline-none placeholder:text-slate-400 focus:border-brand"
+          />
+        </div>
+        <button
+          onClick={() => setUrgentOnly((v) => !v)}
+          className={`rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
+            urgentOnly
+              ? "border-rose-200 bg-rose-50 text-rose-700"
+              : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+          }`}
+        >
+          마감임박만 (D-2)
+        </button>
+        <span className="ml-auto text-xs text-slate-400 tabular">
+          {filtered.length}건
+        </span>
+      </div>
+
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
         <table className="w-full text-sm">
           <thead>
@@ -106,14 +146,14 @@ export function BidsView({
                   불러오는 중…
                 </td>
               </tr>
-            ) : bids.length === 0 ? (
+            ) : filtered.length === 0 ? (
               <tr>
                 <td colSpan={5} className="py-12 text-center text-sm text-slate-400">
                   조건에 맞는 공고가 없습니다.
                 </td>
               </tr>
             ) : (
-              bids.map((b) => {
+              filtered.map((b) => {
                 const d = dDay(b.bidClseDt);
                 return (
                   <tr key={b.bidNtceNo} className="hover:bg-slate-50/60">
@@ -124,9 +164,22 @@ export function BidsView({
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <div className="font-medium text-slate-800">{b.bidNtceNm}</div>
-                      <div className="text-xs text-slate-400">
-                        {b.dminsttNm} · {b.rgnNm}
+                      <a
+                        href={b.detailUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-slate-800 hover:text-brand hover:underline"
+                        title="나라장터에서 상세 보기"
+                      >
+                        {b.bidNtceNm}
+                      </a>
+                      <div className="mt-0.5 flex items-center gap-1.5 text-xs text-slate-400">
+                        <span>{b.dminsttNm}</span>
+                        {b.rgnNm && (
+                          <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">
+                            지역제한 {b.rgnNm}
+                          </span>
+                        )}
                       </div>
                     </td>
                     <td className="whitespace-nowrap px-4 py-3 text-right font-semibold tabular text-slate-700">
