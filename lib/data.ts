@@ -1,7 +1,7 @@
 // 데이터 로더 — 실데이터(키 있을 때) ↔ fixture 폴백을 한 곳에서 관리.
 // API 라우트와 서버 컴포넌트가 공통으로 사용.
 
-import { getBids } from "./g2b";
+import { getBidsCached } from "./g2b";
 import { getPrices } from "./kamis";
 import { analyzeBid } from "./ai-analyze";
 import {
@@ -29,7 +29,7 @@ function filteredFixtureBids(region: Region): Bid[] {
 export async function loadBids(region: Region): Promise<ApiEnvelope<Bid[]>> {
   if (hasG2bKey()) {
     try {
-      const data = await getBids({ region });
+      const data = await getBidsCached({ region });
       if (data.length > 0) {
         return { data, usingFixtures: false, fetchedAt: nowIso() };
       }

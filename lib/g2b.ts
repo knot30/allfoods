@@ -1,6 +1,7 @@
 // 나라장터 입찰공고정보서비스 클라이언트 (물품: getBidPblancListInfoThng).
 // 서버에서만 호출. 키 없으면 호출하지 않고 상위에서 fixture 폴백.
 
+import { unstable_cache } from "next/cache";
 import {
   G2B_BASE_URL,
   G2B_SERVICE_KEY,
@@ -140,4 +141,15 @@ export async function getBids(opts: GetBidsOptions): Promise<Bid[]> {
         inRegion(`${b.dminsttNm} ${b.rgnNm}`, opts.region),
     )
     .sort((a, b) => a.bidClseDt.localeCompare(b.bidClseDt));
+}
+
+/** getBids 의 캐시 래퍼. 3MB 원본은 캐시 못 하므로(2MB 한도) 정규화된 결과만 10분 캐시.
+ *  → 첫 호출만 정부 API 왕복(수 초), 이후 동일 지역 요청은 즉시 응답. */
+export function getBidsCached(opts: GetBidsOptions): Promise<Bid[]> {
+  const days = opts.days ?? 7;
+  return unstable_cache(
+    () => getBids({ region: opts.region, days }),
+    ["g2b-bids", opts.region, String(days)],
+    { revalidate: 600, tags: ["g2b-bids"] },
+  )();
 }
